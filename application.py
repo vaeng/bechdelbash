@@ -1,7 +1,6 @@
 import os
 import re
 from flask import Flask, jsonify, render_template, request
-from cs50 import SQL
 
 # DATABASE_URL = "sqlite:///movies.db"
 
