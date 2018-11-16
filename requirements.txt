@@ -1,4 +1,3 @@
 gunicorn
 flask
-cs50
-psycopg2
+psycopg2-binary
