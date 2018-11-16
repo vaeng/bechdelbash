@@ -31,7 +31,7 @@ def after_request(response):
 def success(country):
     countryresult = cursor.execute("SELECT * FROM list LIMIT 5")
     print(countryresult)
-    countryresult = db.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country LIKE :country", country="%" + country + "%")[0]
+    countryresult = cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country LIKE :country", country="%" + country + "%")[0]
     print(countryresult)
     if not countryresult:
         return "No known movies for: " + country
