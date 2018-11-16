@@ -1,6 +1,7 @@
 import os
 import re
 from flask import Flask, jsonify, render_template, request
+import psycopg2
 
 # DATABASE_URL = "sqlite:///movies.db"
 
