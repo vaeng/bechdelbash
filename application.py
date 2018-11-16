@@ -6,13 +6,16 @@ from flask import Flask, jsonify, render_template, request
 
 DATABASE_URL = "postgres://qekvcnyebnsgvd:6ed23855e6c43cb2c3e6827668f5fdbedcec79b312e51fb643f01bb1734070ee@ec2-54-235-156-60.compute-1.amazonaws.com:5432/dcsk9j9tcn3eej" # os.environ['DATABASE_URL']
 
+connection = psycopg2.connect(DATABASE_URL, sslmode='require')
+print(connection)
+cursor = connection.cursor()
+print(cursor)
+
+
 # Configure application
 app = Flask(__name__)
 
 # bechdeldatabase
-db = SQL(DATABASE_URL)
-
-
 app = Flask(__name__)
 
 # Ensure responses aren't cached
@@ -25,15 +28,10 @@ def after_request(response):
 
 @app.route('/country/<country>/')
 def success(country):
-    connection = psycopg2.connect(DATABASE_URL, sslmode='require')
-    print(connection)
-    cursor = connection.cursor()
-    print(cursor)
     countryresult = cursor.execute("SELECT * FROM list LIMIT 5")
     print(countryresult)
     countryresult = db.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country LIKE :country", country="%" + country + "%")[0]
     print(countryresult)
-    connection.close()
     if not countryresult:
         return "No known movies for: " + country
     else:
