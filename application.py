@@ -2,15 +2,14 @@ import os
 import re
 from flask import Flask, jsonify, render_template, request
 from cs50 import SQL
-from boto.s3.connection import S3Connection # to access config vars
 
-dburl = S3Connection(os.environ['DATABASE_URL'])
+DATABASE_URL = os.environ['DATABASE_URL']
 
 # Configure application
 app = Flask(__name__)
 
 # bechdeldatabase
-db = SQL(dburl)
+db = SQL(DATABASE_URL)
 
 
 app = Flask(__name__)

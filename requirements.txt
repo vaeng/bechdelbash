@@ -1,4 +1,3 @@
 gunicorn
 flask
 cs50
-boto
