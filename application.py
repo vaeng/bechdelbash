@@ -8,7 +8,7 @@ from cs50 import SQL
 app = Flask(__name__)
 
 # bechdeldatabase
-db = SQL("sqlite:///movies.db")
+db = SQL("DATABASE_URL")
 
 
 app = Flask(__name__)
