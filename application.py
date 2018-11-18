@@ -29,7 +29,7 @@ def after_request(response):
 
 @app.route('/country/<country>/')
 def success(country):
-    cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country LIKE :country", country="%" + country + "%")
+    cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country LIKE %s", ("%" + country + "%",))
     countryresult = cursor.fetchone()
     print(countryresult)
     if not countryresult:
