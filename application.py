@@ -30,12 +30,10 @@ def bechdelresults(category, filters):
     filterstring = "%" + filters + "%"
     try:
         cursor.execute(sql.SQL("SELECT SUM(rating), COUNT(rating) FROM list WHERE {} ILIKE %s").format(sql.Identifier(category)), (filterstring,))
-        result = cursor.fetchone()
-        return ("The average bechdel score for movies with " + filters + " in "  + category + " is " + str(result[0]/result[1]) + " with " + str(result[0]) + " movies.")
     except:
         return ("No known movies for: " + filters + " in " + category)
-
-
+    result = cursor.fetchone()
+    return ("The average bechdel score for movies with " + filters + " in "  + category + " is " + str(result[0]/result[1]) + " with " + str(result[0]) + " movies.")
 
 
 if __name__ == '__main__':
