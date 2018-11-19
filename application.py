@@ -29,13 +29,13 @@ def after_request(response):
 
 @app.route('/country/<country>/')
 def success(country):
-    cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country LIKE %s", ("%" + country + "%",))
-    countryresult = cursor.fetchone()
+    cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country ILIKE %s", ('%' + country + '%',)) # , because it is a tuple
+    countryresult = cursor.fetchone()[0]
     print(countryresult)
     if not countryresult:
         return "No known movies for: " + country
     else:
-         return ("The average bechdel score for movies from " + country + " is " + str(countryresult['SUM(rating)']/countryresult['COUNT(rating)']) + " with " + str(countryresult['COUNT(rating)']) + " movies.")
+         return ("The average bechdel score for movies from " + country + " is " + str(countryresult[0]/countryresult[1]) + " with " + str(countryresult[0]) + " movies.")
 
 
 
