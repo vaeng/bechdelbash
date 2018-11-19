@@ -27,15 +27,14 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-@app.route('/country/<country>/')
-def success(country):
-    cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country ILIKE %s", ('%' + country + '%',)) # , because it is a tuple
-    countryresult = cursor.fetchone()
-    print(countryresult)
-    if not countryresult[0]:
-        return "No known movies for: " + country
+@app.route('/<category>/<filters>/')
+def bechdelresults(category, filters):
+    cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE %s ILIKE %s", (category,'%' + filters + '%'))
+    result = cursor.fetchone()
+    if not result[0]:
+        return "No known movies for: " + filters " in " + category
     else:
-         return ("The average bechdel score for movies from " + country + " is " + str(countryresult[0]/countryresult[1]) + " with " + str(countryresult[0]) + " movies.")
+         return ("The average bechdel score for movies with " + filters + " in "  + category + " is " + str(result[0]/result[1]) + " with " + str(result[0]) + " movies.")
 
 
 
