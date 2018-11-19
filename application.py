@@ -30,7 +30,7 @@ def after_request(response):
 @app.route('/country/<country>/')
 def success(country):
     cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country ILIKE %s", ('%' + country + '%',)) # , because it is a tuple
-    countryresult = cursor.fetchone()[0]
+    countryresult = cursor.fetchone()
     print(countryresult)
     if not countryresult:
         return "No known movies for: " + country
