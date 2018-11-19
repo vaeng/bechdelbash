@@ -32,7 +32,7 @@ def success(country):
     cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE country ILIKE %s", ('%' + country + '%',)) # , because it is a tuple
     countryresult = cursor.fetchone()
     print(countryresult)
-    if not countryresult:
+    if not countryresult[0]:
         return "No known movies for: " + country
     else:
          return ("The average bechdel score for movies from " + country + " is " + str(countryresult[0]/countryresult[1]) + " with " + str(countryresult[0]) + " movies.")
