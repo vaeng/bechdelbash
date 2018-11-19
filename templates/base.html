@@ -1,0 +1,30 @@
+<! — "Parent Template" - >
+<!DOCTYPE html>
+<html>
+<head>
+ {% block head %}
+ <link href="/static/styles.css" rel="stylesheet"/>
+ <title>{% block title %}{% endblock %}</title>
+ {% endblock %}
+</head>
+<body>
+ {% block body %}
+ <div id="topleft">
+  {% block topleft %}
+  {% endblock %}
+ </div>
+  <div id="topright">
+  {% block topright %}
+  {% endblock %}
+ </div>
+ <div id="bottomleft">
+  {% block bottomleft %}
+  {% endblock %}
+ </div>
+ <div id="bottomright">
+  {% block bottomright %}
+  {% endblock %}
+ </div>
+ {% endblock %}
+</body>
+</html>

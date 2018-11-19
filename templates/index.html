@@ -1,0 +1,30 @@
+<! — "Child Template" ->
+{% extends "base.html" %}
+
+{% block title %}
+    Bechdel Bash!
+{% endblock %}
+
+{% block topright %}
+    TR
+{% endblock %}
+
+{% block topleft %}
+    <script type="text/javascript">
+        function update_left_bechdel(){
+        	var userInput = document.getElementById('leftsearch').value;
+        	document.getElementById('chartleft').innerHTML = userInput;
+        }
+    </script>
+
+    <input type='text' id='leftsearch' value='Enter Search Term' />
+    <input type='button' onclick='update_left_bechdel()' value='Look up Chart'/>
+{% endblock %}
+
+{% block bottomleft %}
+    <div id='chartleft'></div>
+{% endblock %}
+
+{% block bottomright %}
+   <div id='chartright'></div>
+{% endblock %}
