@@ -2,22 +2,20 @@ import os
 import re
 from flask import Flask, jsonify, render_template, request
 import psycopg2
+from psycopg2 import sql
 
+
+# Set up database
 # DATABASE_URL = "sqlite:///movies.db"
-
 DATABASE_URL = os.environ['DATABASE_URL']
-
 connection = psycopg2.connect(DATABASE_URL, sslmode='require')
-print(connection)
 cursor = connection.cursor()
-print(cursor)
+
 
 
 # Configure application
 app = Flask(__name__)
 
-# bechdeldatabase
-app = Flask(__name__)
 
 # Ensure responses aren't cached
 @app.after_request
@@ -29,7 +27,8 @@ def after_request(response):
 
 @app.route('/<category>/<filters>/')
 def bechdelresults(category, filters):
-    cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE %s ILIKE %s", (category,'%' + filters + '%'))
+    filterstring = "%" + filters + "%"
+    cursor.execute(sql.SQL("SELECT SUM(rating), COUNT(rating) FROM list WHERE {} ILIKE %s").format(sql.Identifier(category)), (filterstring,))
     result = cursor.fetchone()
     if not result[0]:
         return ("No known movies for: " + filters + " in " + category)
