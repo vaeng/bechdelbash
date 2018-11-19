@@ -32,7 +32,7 @@ def bechdelresults(category, filters):
     cursor.execute("SELECT SUM(rating), COUNT(rating) FROM list WHERE %s ILIKE %s", (category,'%' + filters + '%'))
     result = cursor.fetchone()
     if not result[0]:
-        return ("No known movies for: " + filters " in " + category)
+        return ("No known movies for: " + filters + " in " + category)
     else:
          return ("The average bechdel score for movies with " + filters + " in "  + category + " is " + str(result[0]/result[1]) + " with " + str(result[0]) + " movies.")
 
