@@ -11,7 +11,7 @@
         	var method = document.getElementById('rightmethod').value;
         	var category = document.getElementById('rightcategory').value;
         	var filterterm = document.getElementById('rightfilterterm').value;
-        	$.getJSON('https://ide50-christiaaan.cs50.io:8080/api/' + method+ '?category=' + category + '&filterterm=' + filterterm, function(data) {
+        	$.getJSON('/api/' + method+ '?category=' + category + '&filterterm=' + filterterm, function(data) {
         	document.getElementById('chartright').innerHTML = "The average bechdel score for movies with " + filterterm + " in "  + category + " is " + data.totalAverage + " with " + data.totalRated + " movies.";
         	});
         }
