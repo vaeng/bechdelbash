@@ -6,18 +6,54 @@
 {% endblock %}
 
 {% block topright %}
-    TR
+    <script type="text/javascript">
+        function update_right_bechdel(){
+        	var method = document.getElementById('rightmethod').value;
+        	var category = document.getElementById('rightcategory').value;
+        	var filterterm = document.getElementById('rightfilterterm').value;
+        	$.getJSON('https://ide50-christiaaan.cs50.io:8080/api/' + method+ '?category=' + category + '&filterterm=' + filterterm, function(data) {
+        	document.getElementById('chartright').innerHTML = "The average bechdel score for movies with " + filterterm + " in "  + category + " is " + data.totalAverage + " with " + data.totalRated + " movies.";
+        	});
+        }
+    </script>
+    <select id='rightmethod'>
+      <option value='getTotalScore'>Total Score</option>
+      <option value='getYearlyScores'>Score by years</option>
+      <option value='getDecadeScores'>Score by decades</option>
+    </select>
+    <select id='rightcategory'>
+      <option value='genres'>Genres</option>
+      <option value='cast'>Cast</option>
+      <option value='writers'>Writing</option>
+      <option value='directors'>Directing</option>
+    </select>
+    <input type='text' id='rightfilterterm' value='Enter Search Term' />
+    <input type='button' onclick='update_right_bechdel()' value='Look up Chart'/>
 {% endblock %}
 
 {% block topleft %}
     <script type="text/javascript">
         function update_left_bechdel(){
-        	var userInput = document.getElementById('leftsearch').value;
-        	document.getElementById('chartleft').innerHTML = userInput;
+        	var method = document.getElementById('leftmethod').value;
+        	var category = document.getElementById('leftcategory').value;
+        	var filterterm = document.getElementById('leftfilterterm').value;
+        	$.getJSON('https://ide50-christiaaan.cs50.io:8080/api/' + method+ '?category=' + category + '&filterterm=' + filterterm, function(data) {
+        	document.getElementById('chartleft').innerHTML = "The average bechdel score for movies with " + filterterm + " in "  + category + " is " + data.totalAverage + " with " + data.totalRated + " movies.";
+        	});
         }
     </script>
-
-    <input type='text' id='leftsearch' value='Enter Search Term' />
+    <select id='leftmethod'>
+      <option value='getTotalScore'>Total Score</option>
+      <option value='getYearlyScores'>Score by years</option>
+      <option value='getDecadeScores'>Score by decades</option>
+    </select>
+    <select id='leftcategory'>
+      <option value='genres'>Genres</option>
+      <option value='cast'>Cast</option>
+      <option value='writers'>Writing</option>
+      <option value='directors'>Directing</option>
+    </select>
+    <input type='text' id='leftfilterterm' value='Enter Search Term' />
     <input type='button' onclick='update_left_bechdel()' value='Look up Chart'/>
 {% endblock %}
 
