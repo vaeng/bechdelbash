@@ -1,6 +1,0 @@
-html, body { height: 100%; padding: 0; margin: 0; }
-div { width: 50%; height: 50%; float: left; }
-#topright { background: #DDD; }
-#topleft { background: #AAA; }
-#bottomright { background: #777; }
-#bottomleft { background: #444; }

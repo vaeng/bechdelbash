@@ -1,31 +1,57 @@
-<! — "Parent Template" - >
 <!DOCTYPE html>
+<html lang="en">
 <html>
 <head>
- {% block head %}
- <link href="/static/styles.css" rel="stylesheet"/>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <title>{% block title %}{% endblock %}</title>
- {% endblock %}
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+
+ <!-- jQuery library -->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <!-- Latest compiled and minified CSS -->
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+ <!-- Latest compiled JavaScript -->
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ {% block head_additions %}{% endblock %}
 </head>
 <body>
- {% block body %}
- <div id="topleft">
-  {% block topleft %}
-  {% endblock %}
- </div>
-  <div id="topright">
-  {% block topright %}
-  {% endblock %}
- </div>
- <div id="bottomleft">
-  {% block bottomleft %}
-  {% endblock %}
- </div>
- <div id="bottomright">
-  {% block bottomright %}
-  {% endblock %}
- </div>
+ <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Bechdel Bash!</a>
+    </div>
+    <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-info navbar-btn btn-xs" data-toggle="modal" data-target="#searchHint">Search Hint</button>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/about/"> About </a></li>
+      <li><a href="/api/">  API</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Modal -->
+<div id="searchHint" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>You can use _ to replace a single letter and % to replace more letters. "S% Knight" will include "Sandra Knight" but also give results for "Shirley Knight".
+           </p>
+           <p>"K__sten" will find "Kirsten" and also "Kristen"</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+ {% block body_add %}
  {% endblock %}
 </body>
 </html>

@@ -1,66 +1,68 @@
 <! — "Child Template" ->
-{% extends "base.html" %}
-
-{% block title %}
-    Bechdel Bash!
+{% extends "base.html" %} {% block head_additions %}
+<script type="text/javascript" src="/static/script.js"></script>
+<!-- Charts.js libraries -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<!-- Charts.js stacked to 100% plugin from: https://github.com/y-takey/chartjs-plugin-stacked100 -->
+<script type="text/javascript" src="/static/chart.js_plugins/chartjs-plugin-stacked100.js"></script>
 {% endblock %}
 
-{% block topright %}
-    <script type="text/javascript">
-        function update_right_bechdel(){
-        	var method = document.getElementById('rightmethod').value;
-        	var category = document.getElementById('rightcategory').value;
-        	var filterterm = document.getElementById('rightfilterterm').value;
-        	$.getJSON('/api/' + method+ '?category=' + category + '&filterterm=' + filterterm, function(data) {
-        	document.getElementById('chartright').innerHTML = "The average bechdel score for movies with " + filterterm + " in "  + category + " is " + data.totalAverage + " with " + data.totalRated + " movies.";
-        	});
-        }
-    </script>
-    <select id='rightmethod'>
-      <option value='getTotalScore'>Total Score</option>
-      <option value='getYearlyScores'>Score by years</option>
-      <option value='getDecadeScores'>Score by decades</option>
-    </select>
-    <select id='rightcategory'>
-      <option value='genres'>Genres</option>
-      <option value='cast'>Cast</option>
-      <option value='writers'>Writing</option>
-      <option value='directors'>Directing</option>
-    </select>
-    <input type='text' id='rightfilterterm' value='Enter Search Term' />
-    <input type='button' onclick='update_right_bechdel()' value='Look up Chart'/>
-{% endblock %}
+{% block title %} Bechdel Bash! {% endblock %}
 
-{% block topleft %}
-    <script type="text/javascript">
-        function update_left_bechdel(){
-        	var method = document.getElementById('leftmethod').value;
-        	var category = document.getElementById('leftcategory').value;
-        	var filterterm = document.getElementById('leftfilterterm').value;
-        	$.getJSON('/api/' + method+ '?category=' + category + '&filterterm=' + filterterm, function(data) {
-        	document.getElementById('chartleft').innerHTML = "The average bechdel score for movies with " + filterterm + " in "  + category + " is " + data.totalAverage + " with " + data.totalRated + " movies.";
-        	});
-        }
-    </script>
-    <select id='leftmethod'>
-      <option value='getTotalScore'>Total Score</option>
-      <option value='getYearlyScores'>Score by years</option>
-      <option value='getDecadeScores'>Score by decades</option>
-    </select>
-    <select id='leftcategory'>
-      <option value='genres'>Genres</option>
-      <option value='cast'>Cast</option>
-      <option value='writers'>Writing</option>
-      <option value='directors'>Directing</option>
-    </select>
-    <input type='text' id='leftfilterterm' value='Enter Search Term' />
-    <input type='button' onclick='update_left_bechdel()' value='Look up Chart'/>
-{% endblock %}
+{% block body_add%}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group form-inline">
+                <label for="leftcategory">Top category:</label>
+                <select id='leftcategory' class='form-control form-control-sm'>
+                  <option value='genres'>Genres</option>
+                  <option value='cast'>Cast</option>
+                  <option value='writers'>Writing</option>
+                  <option value='directors'>Directing</option>
+                  <option value='country'>Country</option>
+                </select>
 
-{% block bottomleft %}
-    <div id='chartleft'></div>
-{% endblock %}
+                <label for="leftfilterterm">Top filter:</label>
+                <input type='text' id='leftfilterterm' value='Action' class='form-control form-control-sm' />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group form-inline">
+                <label for="rightcategory">Bottom category:</label>
+                <select id='rightcategory' class='form-control form-control-sm'>
+                  <option value='genres'>Genres</option>
+                  <option value='cast'>Cast</option>
+                  <option value='writers'>Writing</option>
+                  <option value='directors'>Directing</option>
+                  <option value='country'>Country</option>
+                </select>
 
-{% block bottomright %}
-   <div id='chartright'></div>
+                <label for="rightfilterterm">Bottom filter:</label>
+                <input type='text' id='rightfilterterm' value='Horror' class='form-control form-control-sm' />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group btn-group-justified">
+              <div class="btn-group">
+                <button type="button" onclick='update_chart("getTotalScore")' class="btn btn-primary">Total Score</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" onclick='update_chart("getYearlyScores")' class="btn btn-primary">Score by years</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" onclick='update_chart("getDecadeScores")' class="btn btn-primary">Score by decades</button>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <canvas id="graph"></canvas>
+        </div>
+    </div>
+</div>
 {% endblock %}
