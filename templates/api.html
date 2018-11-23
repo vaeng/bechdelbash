@@ -1,0 +1,204 @@
+<! — "Child Template" ->
+{% extends "base.html" %} {% block head_additions %}
+{% endblock %}
+
+{% block title %} Bechdel Bash! - API {% endblock %}
+
+{% block body_add%}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-8">
+            <p class="h2">API documentation</p>
+            <p>Using this API you can query the databank behind the scenes. Calls are structured like:</p>
+            <p>https://bechdelbash.herokuapp.com/api/method?arguments</p>
+
+            <p class="h3">License</p>
+            <p>The list and ratings are taken from <a href="http://bechdeltest.com/">bechdeltest.com</a> and therefore also licensed
+            under the 'by-nc' CC license <a href="http://creativecommons.org/licenses/by-nc/3.0/"><img src="/static/by-nc-30-80x15.png"
+            alt="Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)"
+            title="Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)"></a>.</p>
+
+            <p class="h3">Usage</p>
+            <p>
+                As this site runs on a heroku free plan, requests are limited to 10.000 per day. Please keep this in mind when querrying.
+            </p>
+
+            <p class="h3">Errors</p>
+            <p>
+                All request return a JSON object and a HTTP status. If there was an error, the HTTP status is 400.
+                The JSON object will contain more information on the error. </p>
+            <p>Example (for call to https://bechdelbash.herokuapp.com/api/somemethod):</p>
+            <pre>{
+ "error":"somemethod method not supported""
+}</pre>
+
+            <p class="h3">Methods</p>
+            <p>
+                <ul>
+                    <li><a href="#getTotalScore">getTotalScore</a></li>
+                    <li><a href="#getDecadeScores">getDecadeScores</a></li>
+                    <li><a href="#getYearlyScores">getYearlyScores</a></li>
+                </ul>
+            </p>
+            <p></p>
+            <p class="h4" id="getTotalScore">getTotalScore</p>
+            <p>Parameter:
+            <ul>
+                <li>category (at the moment: country, title, cast, writers, directors and genres</li>
+                <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
+            </ul></p>
+            <p> Return value: A JSON object containing rating information of movies in the filtered category. Returned fiels are:</p>
+            <table class="tabl table-condensed table-striped">
+                <thead>
+                    <th>Name</th>
+                    <th>Value</th>
+                </thead>
+                <tbody>
+                    <tr><td>method</td><td>The method that was called</td></tr>
+                    <tr><td>category</td><td>The category that was seleced</td></tr>
+                    <tr><td>filterTerm</td><td>The filterterm that was seleced</td></tr>
+                    <tr><td>totalRated</td><td>Number of movies in the database for the search</td></tr>
+                    <tr><td>totalAverage</td><td>Average Bechdel rating of search result</td></tr>
+                    <tr><td>totalRatingOf0</td><td>Number of movies with a rating of 0</td></tr>
+                    <tr><td>totalRatingOf1</td><td>Number of movies with a rating of 1</td></tr>
+                    <tr><td>totalRatingOf2</td><td>Number of movies with a rating of 2</td></tr>
+                    <tr><td>totalRatingOf3</td><td>Number of movies with a rating of 3</td></tr>
+                </tbody>
+            </table>
+            <p>Example (for a call to https://bechdelbash.herokuapp.com/api/getTotalScore?category=country&filterterm=iceland):</p>
+<pre>{
+  "method": "getTotalScore",
+  "category": "country",
+  "filterTerm": "iceland",
+  "totalRated": 16,
+  "totalAverage": "2.0625",
+  "totalRatingOf0": 2,
+  "totalRatingOf1": 4,
+  "totalRatingOf2": 1,
+  "totalRatingOf3": 9
+}</pre>
+        <p></p>
+        <p class="h4" id="getDecadeScores">getDecadeScores</p>
+            <p>Parameter:
+            <ul>
+                <li>category (at the moment: country, title, cast, writers, directors and genres</li>
+                <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
+            </ul></p>
+            <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by decades. Returned fiels are:</p>
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <th>Name</th>
+                    <th>Value</th>
+                </thead>
+                <tbody>
+                    <tr><td>method</td><td>The method that was called</td></tr>
+                    <tr><td>category</td><td>The category that was seleced</td></tr>
+                    <tr><td>filterTerm</td><td>The filterterm that was seleced</td></tr>
+                    <tr><td>totalRated</td><td>Number of movies in the database for the search</td></tr>
+                    <tr><td>totalAverage</td><td>Average Bechdel rating of search result</td></tr>
+                    <tr><td>totalRatingOf0</td><td>Number of movies with a rating of 0</td></tr>
+                    <tr><td>totalRatingOf1</td><td>Number of movies with a rating of 1</td></tr>
+                    <tr><td>totalRatingOf2</td><td>Number of movies with a rating of 2</td></tr>
+                    <tr><td>totalRatingOf3</td><td>Number of movies with a rating of 3</td></tr>
+                    <tr><td>decades</td><td>A field containing sub fields of decades with results from search, each containing the total fields above.</td></tr>
+                </tbody>
+            </table>
+            <p>Example (for a call to https://bechdelbash.herokuapp.com/api/getDecadeScores?category=cast&filterterm=Pat%20Carroll):</p>
+<pre>{
+  "method": "getDecadeScores",
+  "category": "cast",
+  "filterTerm": "Pat Carroll",
+  "totalRated": 8,
+  "totalAverage": "2.625",
+  "totalRatingOf0": 0,
+  "totalRatingOf1": 1,
+  "totalRatingOf2": 1,
+  "totalRatingOf3": 6,
+  "decades": {
+    "1980": {
+      "totalRated": 2,
+      "totalAverage": "3.0",
+      "totalRatingOf0": 0,
+      "totalRatingOf1": 0,
+      "totalRatingOf2": 0,
+      "totalRatingOf3": 2
+    },
+    "1990": {
+      "totalRated": 1,
+      "totalAverage": "2.0",
+      "totalRatingOf0": 0,
+      "totalRatingOf1": 0,
+      "totalRatingOf2": 1,
+      "totalRatingOf3": 0
+    },
+    [...]
+    }
+  }
+}</pre>
+        <p></p>
+        <p class="h4" id="getYearlyScores">getYearlyScores</p>
+            <p>Parameter:
+            <ul>
+                <li>category (at the moment: country, title, cast, writers, directors and genres</li>
+                <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
+            </ul></p>
+            <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by years. Returned fiels are:</p>
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <th>Name</th>
+                    <th>Value</th>
+                </thead>
+                <tbody>
+                    <tr><td>method</td><td>The method that was called</td></tr>
+                    <tr><td>category</td><td>The category that was seleced</td></tr>
+                    <tr><td>filterTerm</td><td>The filterterm that was seleced</td></tr>
+                    <tr><td>totalRated</td><td>Number of movies in the database for the search</td></tr>
+                    <tr><td>totalAverage</td><td>Average Bechdel rating of search result</td></tr>
+                    <tr><td>totalRatingOf0</td><td>Number of movies with a rating of 0</td></tr>
+                    <tr><td>totalRatingOf1</td><td>Number of movies with a rating of 1</td></tr>
+                    <tr><td>totalRatingOf2</td><td>Number of movies with a rating of 2</td></tr>
+                    <tr><td>totalRatingOf3</td><td>Number of movies with a rating of 3</td></tr>
+                    <tr><td>years</td><td>A field containing sub fields of years with results from search, each containing the total fields above.</td></tr>
+                </tbody>
+            </table>
+            <p>Example (for a call to https://bechdelbash.herokuapp.com/api/getDecadeScores?category=genres&filterterm=sport):</p>
+<pre>{
+  "method": "getDecadeScores",
+  "category": "genres",
+  "filterTerm": "sport",
+  "totalRated": 153,
+  "totalAverage": "1.947712418",
+  "totalRatingOf0": 11,
+  "totalRatingOf1": 54,
+  "totalRatingOf2": 20,
+  "totalRatingOf3": 68,
+  "decades": {
+    "1920": {
+      "totalRated": 1,
+      "totalAverage": "0.0",
+      "totalRatingOf0": 1,
+      "totalRatingOf1": 0,
+      "totalRatingOf2": 0,
+      "totalRatingOf3": 0
+    },
+
+    [...]
+
+    "2010": {
+      "totalRated": 53,
+      "totalAverage": "2.094339623",
+      "totalRatingOf0": 3,
+      "totalRatingOf1": 16,
+      "totalRatingOf2": 7,
+      "totalRatingOf3": 27
+    }
+  }
+}</pre>
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+</div>
+{% endblock %}

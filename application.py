@@ -123,6 +123,16 @@ def apirequest(method):
     return Response(json.dumps(data),  mimetype='application/json', status=200)
 
 
+@app.route('/api')
+def showAPI():
+    return render_template("api.html")
+
+
+@app.route('/about')
+def showAbout():
+    return render_template("about.html")
+
+
 @app.route('/')
 def index():
     return render_template("index.html")
