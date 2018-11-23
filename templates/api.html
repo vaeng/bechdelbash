@@ -22,7 +22,7 @@
 
             <p class="h3">Usage</p>
             <p>
-                As this site runs on a heroku free plan, requests are limited to 10.000 per day. Please keep this in mind when querrying.
+                As this site runs on a heroku free plan, requests are limited to 10.000 per day. Please keep this in mind when querying.
             </p>
 
             <p class="h3">Errors</p>
@@ -46,10 +46,10 @@
             <p class="h4" id="getTotalScore">getTotalScore</p>
             <p>Parameter:
             <ul>
-                <li>category (at the moment: country, title, cast, writers, directors and genres</li>
+                <li>category (currently: country, title, cast, writers, directors and genres)</li>
                 <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
             </ul></p>
-            <p> Return value: A JSON object containing rating information of movies in the filtered category. Returned fiels are:</p>
+            <p> Return value: A JSON object containing rating information of movies in the filtered category. Returned fields are:</p>
             <table class="table table-sm table-striped">
                 <thead>
                     <th>Name</th>
@@ -57,8 +57,8 @@
                 </thead>
                 <tbody>
                     <tr><td>method</td><td>The method that was called</td></tr>
-                    <tr><td>category</td><td>The category that was seleced</td></tr>
-                    <tr><td>filterTerm</td><td>The filterterm that was seleced</td></tr>
+                    <tr><td>category</td><td>The category that was selected</td></tr>
+                    <tr><td>filterTerm</td><td>The filterterm that was selected</td></tr>
                     <tr><td>totalRated</td><td>Number of movies in the database for the search</td></tr>
                     <tr><td>totalAverage</td><td>Average Bechdel rating of search result</td></tr>
                     <tr><td>totalRatingOf0</td><td>Number of movies with a rating of 0</td></tr>
@@ -83,10 +83,10 @@
         <p class="h4" id="getDecadeScores">getDecadeScores</p>
             <p>Parameter:
             <ul>
-                <li>category (at the moment: country, title, cast, writers, directors and genres</li>
+                <li>category (currently: country, title, cast, writers, directors and genres)</li>
                 <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
             </ul></p>
-            <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by decades. Returned fiels are:</p>
+            <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by decades. Returned fields are:</p>
             <table class="table table-sm table-striped">
                 <thead>
                     <th>Name</th>
@@ -94,8 +94,8 @@
                 </thead>
                 <tbody>
                     <tr><td>method</td><td>The method that was called</td></tr>
-                    <tr><td>category</td><td>The category that was seleced</td></tr>
-                    <tr><td>filterTerm</td><td>The filterterm that was seleced</td></tr>
+                    <tr><td>category</td><td>The category that was selected</td></tr>
+                    <tr><td>filterTerm</td><td>The filterterm that was selected</td></tr>
                     <tr><td>totalRated</td><td>Number of movies in the database for the search</td></tr>
                     <tr><td>totalAverage</td><td>Average Bechdel rating of search result</td></tr>
                     <tr><td>totalRatingOf0</td><td>Number of movies with a rating of 0</td></tr>
@@ -141,10 +141,10 @@
         <p class="h4" id="getYearlyScores">getYearlyScores</p>
             <p>Parameter:
             <ul>
-                <li>category (at the moment: country, title, cast, writers, directors and genres</li>
+                <li>category (currently: country, title, cast, writers, directors and genres)</li>
                 <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
             </ul></p>
-            <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by years. Returned fiels are:</p>
+            <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by years. Returned fields are:</p>
             <table class="table table-sm table-striped">
                 <thead>
                     <th>Name</th>
@@ -152,8 +152,8 @@
                 </thead>
                 <tbody>
                     <tr><td>method</td><td>The method that was called</td></tr>
-                    <tr><td>category</td><td>The category that was seleced</td></tr>
-                    <tr><td>filterTerm</td><td>The filterterm that was seleced</td></tr>
+                    <tr><td>category</td><td>The category that was selected</td></tr>
+                    <tr><td>filterTerm</td><td>The filterterm that was selected</td></tr>
                     <tr><td>totalRated</td><td>Number of movies in the database for the search</td></tr>
                     <tr><td>totalAverage</td><td>Average Bechdel rating of search result</td></tr>
                     <tr><td>totalRatingOf0</td><td>Number of movies with a rating of 0</td></tr>

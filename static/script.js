@@ -1,5 +1,5 @@
 var bechdelchart;
-var labeltext0 = "Movies have ess than two [named] woman";
+var labeltext0 = "Movies with less than two [named] women";
 var labeltext1 = "More than one [named] women";
 var labeltext2 = "Who talk to each other";
 var labeltext3 = "About something besides a man";
@@ -92,10 +92,9 @@ function generateChart(data1, data2) {
                         return false;
                     }
                     return true;
-                }
-            }
+                },
+            },
         },
-
         animation : {
             onComplete: generateImage // calls function generateImage() {} at end to save the image
             },
