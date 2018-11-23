@@ -1,4 +1,14 @@
 var bechdelchart;
+var labeltext0 = "Movies have ess than two [named] woman";
+var labeltext1 = "More than one [named] women";
+var labeltext2 = "Who talk to each other";
+var labeltext3 = "About something besides a man";
+var url =""; // url to the image for sharing
+
+/*
+1. It has to have at least two [named] women in it
+2. Who talk to each other
+3. About something besides a man*/
 
 function update_chart(method) {
     var category1 = document.getElementById('leftcategory').value;
@@ -45,20 +55,55 @@ function update_chart(method) {
 function generateChart(data1, data2) {
     var barOptions_stacked = {
         plugins: {
-            stacked100: {
-                enable: true // to enable 100% plugin
-            }
+            stacked100: { enable: true, replaceTooltipLabel: false },
+
+            datalabels: {
+						color: 'white',
+						display: function(context) {
+							return context.dataset.data[context.dataIndex] > 0;},
+						font: {
+							weight: 'bold'
+						},
+						formatter: (_value, context) => {
+                          const data = context.chart.data;
+                          const { datasetIndex, dataIndex } = context;
+                          return `${data.calculatedData[datasetIndex][dataIndex]}% (${data.originalData[datasetIndex][dataIndex]})`;
+                        }
+					}
         },
         scales: {
             yAxes: [{
                 maxBarThickness: 100,
                     }]},
+
         responsive: true,
         maintainAspectRatio: false, // to be able to scale with scaleheight in update_chart()
-        layout: {
-            padding: {
-                bottom: 110  // to fit the tooltip. if 0 it would be cut off
+
+        tooltips: false,
+
+        legend: {
+            display : true,
+            position : 'top',
+            onClick: function(event, legendItem) {}, // disables the onclick behaviour
+
+            labels: {
+                filter: function(legendItem, data) { // do not show labels without data
+                    if(!legendItem.text){
+                        return false;
+                    }
+                    return true;
+                }
             }
+        },
+
+        animation : {
+            onComplete: generateImage // calls function generateImage() {} at end to save the image
+            },
+
+        title: {
+          display : true,
+          text : [data1.filterTerm + " vs. " + data2.filterTerm, parseFloat(Math.round(data1.totalAverage * 100) / 100).toFixed(3) + " - " + parseFloat(Math.round(data2.totalAverage * 100) / 100).toFixed(3)],
+          fontSize : 20,
         },
     };
 
@@ -69,6 +114,12 @@ function generateChart(data1, data2) {
     };
     return dataObject;
 }
+
+//will generate image code
+function generateImage(){
+   // url=bechdelchart.toBase64Image();
+}
+
 
 
 // will generate the data for the chart from the sql call
@@ -165,50 +216,47 @@ function generateData(jsondata1, jsondata2) {
 
     }
 
+
     var datasets = [{
-        label: name1 + ": 0",
+        label: labeltext0,
         data: data1_0,
         stack: "Stack 0",
         backgroundColor: "rgb(255, 99, 71)",
         hoverBackgroundColor: "rgb(255, 99, 71)"
     }, {
-        label: name1 + ": 1",
+        label: labeltext1,
         data: data1_1,
         stack: "Stack 0",
         backgroundColor: "rgb(255, 165, 0)",
         hoverBackgroundColor: "rgb(255, 165, 0)"
     }, {
-        label: name1 + ": 2",
+        label: labeltext2,
         data: data1_2,
         stack: "Stack 0",
         backgroundColor: "rgb(30, 144, 255)",
         hoverBackgroundColor: "rgb(30, 144, 255)"
     }, {
-        label: name1 + ": 3",
+        label: labeltext3,
         data: data1_3,
         stack: "Stack 0",
         backgroundColor: "rgb(60, 179, 113)",
         hoverBackgroundColor: "rgb(60, 179, 113)"
     }, {
-        label: name2 + ": 0",
         data: data2_0,
         stack: "Stack 1",
         backgroundColor: "rgb(255, 147, 128)",
         hoverBackgroundColor: "rgb(255, 147, 128)"
     }, {
-        label: name2 + ": 1",
         data: data2_1,
         stack: "Stack 1",
         backgroundColor: "rgb(255, 193, 77)",
         hoverBackgroundColor: "rgb(255, 193, 77)"
     }, {
-        label: name2 + ": 2",
         data: data2_2,
         stack: "Stack 1",
         backgroundColor: "rgb(77, 166, 255)",
         hoverBackgroundColor: "rgb(77, 166, 255)"
     }, {
-        label: name2 + ": 3",
         data: data2_3,
         stack: "Stack 1",
         backgroundColor: "rgb(102, 204, 148)",
