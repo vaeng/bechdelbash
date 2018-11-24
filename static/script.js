@@ -6,7 +6,10 @@ var labeltext3 = "About something besides a man";
 var imgurl =""; // url to the image for sharing
 var methodused = "";
 
+
+// function to handle parameters to set the forms
 function checkParams() {
+    randomizeForms();
     var url_string = window.location.href;
     var url = new URL(url_string);
     var c1 = url.searchParams.get("c1");
@@ -17,9 +20,8 @@ function checkParams() {
     var validMethods = ["getTotalScore", "getDecadeScores", "getYearlyScores"];
     if (validMethods.includes(m)) {
         if(!c1 || !c2  || !f1  || !f2) {
-            console.log("not enough arguments");
+          //not enought input variables
         } else {
-            // http://ide50-christiaaan.cs50.io:8080/?m=getTotalScore&c1=Title&f1=Star Trek&c2=title&f2=Star Wars
             var validCats = ["title", "genres", "country", "writers", "cast", "directors"];
             if (validCats.includes(c1) && validCats.includes(c2)) {
                 $('#leftcategory').val(c1);
@@ -154,7 +156,7 @@ function generateImage(){
         //url update not supported
     } else {
         history.pushState(null, null, parameterpart);
-    };
+    }
 }
 
 
@@ -307,3 +309,47 @@ function generateData(jsondata1, jsondata2) {
 
     return generatedData;
 }
+
+function randomizeForms(){
+    console.log("random works");
+    var keys = Object.keys(exampleEntries);
+    // taken from: https://stackoverflow.com/questions/2532218/pick-random-property-from-a-javascript-object
+    var randomProperty = exampleEntries[keys[ keys.length * Math.random() << 0]];
+    $('#leftcategory').val(randomProperty.c1);
+    $('#leftfilterterm').val(randomProperty.f1);
+    $('#rightcategory').val(randomProperty.c2);
+    $('#rightfilterterm').val(randomProperty.f2);
+}
+
+var exampleEntries = {
+    1 :{
+        c1: "title",
+        c2: "title",
+        f1: "Star Wars",
+        f2: "Star Trek"
+    },
+    2 :{
+        c1: "country",
+        c2: "genres",
+        f1: "France",
+        f2: "Romance"
+    },
+    3 :{
+        c1: "cast",
+        c2: "cast",
+        f1: "Betty White",
+        f2: "Jack Black"
+    },
+    4 :{
+        c1: "directors",
+        c2: "directors",
+        f1: "Kathryn Bigelow",
+        f2: "M. Night Sh%malan"
+    },
+    5 :{
+        c1: "writers",
+        c2: "writers",
+        f1: "Francis Ford Coppola",
+        f2: "Sofia Coppola"
+    },
+};
