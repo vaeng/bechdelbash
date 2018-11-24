@@ -15,75 +15,90 @@
 {% block body_add%}
 <div class="container-fluid">
     <div class="row"><p> </p></div>
-    <div class="form-row">
-        <div class="offset-sm-1"></div>
+    <div class="form-row justify-content-center">
 
-<div class="col-5 form-inline">
-<div class="form-group">
-<label for="leftcategory" class="mr-2">First category: </label>
-<select id='leftcategory' class="form-control form-control-sm mr-3">
-    <option value='title'>Title</option>
-    <option value='genres'>Genres</option>
-    <option value='cast'>Cast</option>
-    <option value='writers'>Writing</option>
-    <option value='directors'>Directing</option>
-    <option value='country'>Country</option>
-</select>
+		<div class="col-auto form-inline">
+			<div class="form-group">
+				<label for="leftcategory" class="mr-2">First category: </label>
+				<select id='leftcategory' class="form-control form-control-sm mr-3">
+					<option value='title'>Title</option>
+					<option value='genres'>Genres</option>
+					<option value='cast'>Cast</option>
+					<option value='writers'>Writing</option>
+					<option value='directors'>Directing</option>
+					<option value='country'>Country</option>
+				</select>
+			</div>
+
+
+			<div class="form-group">
+				<label for="leftfilterterm" class="mr-2">First filter: </label>
+				<input type='text' id='leftfilterterm' value='Star Trek' class="form-control form-control-sm"/>
+			</div>
+		</div>
+
+
+		<div class="col-auto form-inline">
+			<div class="form-group">
+				<label for="rightcategory" class="mr-2">Second category: </label>
+				<select id='rightcategory' class="form-control form-control-sm mr-3">
+					<option value='title'>Title</option>
+					<option value='genres'>Genres</option>
+					<option value='cast'>Cast</option>
+					<option value='writers'>Writing</option>
+					<option value='directors'>Directing</option>
+					<option value='country'>Country</option>
+				</select>
+			</div>
+
+
+			<div class="form-group">
+				<label for="rightfilterterm" class="mr-2">Second filter: </label>
+				<input type='text' id='rightfilterterm' value='Star Wars' class="form-control form-control-sm" />
+			</div>
+		</div>
+	</div>
+
+    <div class="row"></div>
+    <div class="container-fluid">
+	<div class="row"><p> </p></div>
+	<div class="row justify-content-center no-gutters mb-2">
+		<div class="offset-sm-1"></div>
+		<div class="col-auto">
+			<div class="btn-group d-flex" role="group">
+				<button type="button" onclick='update_chart("getTotalScore")' class="btn btn-info w-100 mb-2">Total Score</button>
+			</div>
+		</div>
+		<div class="col-auto ml-3 mr-3">
+			<div class="btn-group d-flex" role="group">
+				<button type="button" onclick='update_chart("getYearlyScores")' class="btn btn-info w-100 mb-2">Score by years</button>
+			</div>
+		</div>
+		<div class="col-auto">
+			<div class="btn-group d-flex" role="group">
+				<button type="button" onclick='update_chart("getDecadeScores")' class="btn btn-info w-100 mb-2">Score by Decades</button>
+			</div>
+		</div>
+		<div class="offset-sm-1"></div>
+	</div>
 </div>
-
-
-<div class="form-group">
-<label for="leftfilterterm" class="mr-2">First filter: </label>
-<input type='text' id='leftfilterterm' value='Star Trek' class="form-control form-control-sm"/>
-</div>
-</div>
-
-
-<div class="col-5 form-inline">
-<div class="form-group">
-<label for="rightcategory" class="mr-2">Second category: </label>
-<select id='rightcategory' class="form-control form-control-sm mr-3">
-    <option value='title'>Title</option>
-    <option value='genres'>Genres</option>
-    <option value='cast'>Cast</option>
-    <option value='writers'>Writing</option>
-    <option value='directors'>Directing</option>
-    <option value='country'>Country</option>
-</select>
-</div>
-
-
-<div class="form-group">
-<label for="rightfilterterm" class="mr-2">Second filter: </label>
-<input type='text' id='rightfilterterm' value='Star Wars' class="form-control form-control-sm" />
-</div>
-</div>
-
-    <div class="offset-sm-1"></div>
-    </div>
-
-    <div class="row"><p> </p></div>
-
-    <div class="row">
-        <div class="offset-sm-1"></div>
-        <div class="col-sm-10">
-            <div class="btn-group d-flex" role="group">
-                <button type="button" onclick='update_chart("getTotalScore")' class="btn btn-info w-100">Total Score</button>
-                <button type="button" onclick='update_chart("getYearlyScores")' class="btn btn-info w-100">Score by years</button>
-                <button type="button" onclick='update_chart("getDecadeScores")' class="btn btn-info w-100">Score by decades</button>
-            </div>
-        </div>
-        <div class="offset-sm-1"></div>
-    </div>
     <div class="row">
         <div class="offset-sm-2"></div>
         <div class="col-sm-8 mt-3">
             <div id="graph-container" class="chart-container">
-                <canvas id="graph" style="color:red;"></canvas>
+                <canvas id="graph" class="mb-3"></canvas>
+            </div>
+            <div id="shares" class="d-none">
+                <p class="text-center text-muted">Share this Bechdel Bash as <a id="shareURL" href="#">image</a> or <a id="shareLink" href="#">link.</a></p>
             </div>
         </div>
         <div class="offset-sm-2"></div>
     </div>
 </div>
+
+<script>
+$(document).ready(checkParams());
+</script>
+
 {% endblock %}
 

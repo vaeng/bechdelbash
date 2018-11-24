@@ -1,14 +1,36 @@
 var bechdelchart;
 var labeltext0 = "Movies with less than two [named] women";
-var labeltext1 = "More than one [named] women";
+var labeltext1 = "More than one [named] woman";
 var labeltext2 = "Who talk to each other";
 var labeltext3 = "About something besides a man";
-var url =""; // url to the image for sharing
+var imgurl =""; // url to the image for sharing
+var methodused = "";
 
-/*
-1. It has to have at least two [named] women in it
-2. Who talk to each other
-3. About something besides a man*/
+function checkParams() {
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    var c1 = url.searchParams.get("c1");
+    var c2 = url.searchParams.get("c2");
+    var f1 = url.searchParams.get("f1");
+    var f2 = url.searchParams.get("f2");
+    var m = url.searchParams.get("m");
+    var validMethods = ["getTotalScore", "getDecadeScores", "getYearlyScores"];
+    if (validMethods.includes(m)) {
+        if(!c1 || !c2  || !f1  || !f2) {
+            console.log("not enough arguments");
+        } else {
+            // http://ide50-christiaaan.cs50.io:8080/?m=getTotalScore&c1=Title&f1=Star Trek&c2=title&f2=Star Wars
+            var validCats = ["title", "genres", "country", "writers", "cast", "directors"];
+            if (validCats.includes(c1) && validCats.includes(c2)) {
+                $('#leftcategory').val(c1);
+                $('#leftfilterterm').val(f1);
+                $('#rightcategory').val(c2);
+                $('#rightfilterterm').val(f2);
+                update_chart(m);
+            }
+        }
+    }
+}
 
 function update_chart(method) {
     var category1 = document.getElementById('leftcategory').value;
@@ -17,6 +39,7 @@ function update_chart(method) {
     var filterterm2 = document.getElementById('rightfilterterm').value;
     var data1 = null;
     var data2 = null;
+    methodused = method;
 
     url1 = '/api/' + method + '?category=' + category1 + '&filterterm=' + filterterm1;
     url2 = '/api/' + method + '?category=' + category2 + '&filterterm=' + filterterm2;
@@ -96,7 +119,7 @@ function generateChart(data1, data2) {
             },
         },
         animation : {
-            onComplete: generateImage // calls function generateImage() {} at end to save the image
+            onComplete: generateImage, // calls function generateImage() {} at end to save the image
             },
 
         title: {
@@ -114,9 +137,24 @@ function generateChart(data1, data2) {
     return dataObject;
 }
 
-//will generate image code
+//will generate image code and link and refresh link
 function generateImage(){
-   // url=bechdelchart.toBase64Image();
+    $("#shares").removeClass('d-none'); // To show it
+    imgurl=bechdelchart.toBase64Image();
+    var pathname = window.location.pathname;
+    console.log(pathname);
+    var hostnamepart = "https://" + window.location.hostname + window.location.pathname;
+    var parameterpart = "?m=" + methodused + "&c1=" + $('#leftcategory').val() + "&f1=" + $('#leftfilterterm').val() + "&c2=" + $('#rightcategory').val() + "&f2=" + $('#rightfilterterm').val();
+    var linkurl = encodeURI( hostnamepart + parameterpart);
+    $('#shareURL').attr("href", imgurl); // Set herf value for image and link:
+    $('#shareLink').attr("href", linkurl);
+    // window.history.pushState("object or string", "Title", "/new-url");
+    // history.pushState(null, null, e.attr('href'));
+    if(!history.pushState){
+        //url update not supported
+    } else {
+        history.pushState(null, null, parameterpart);
+    };
 }
 
 
@@ -124,7 +162,7 @@ function generateImage(){
 // will generate the data for the chart from the sql call
 function generateData(jsondata1, jsondata2) {
 
-    labels = ["all time"];
+    labels = ["all time: "];
     name1 = jsondata1.filterTerm;
     name2 = jsondata2.filterTerm;
     data1_0 = [jsondata1.totalRatingOf0];
