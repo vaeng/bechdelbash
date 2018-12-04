@@ -46,7 +46,7 @@
             <p class="h4" id="getTotalScore">getTotalScore</p>
             <p>Parameter:
             <ul>
-                <li>category (currently: country, title, cast, writers, directors and genres)</li>
+                <li>category (currently: country, title, castmember, writers, directors and genres)</li>
                 <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
             </ul></p>
             <p> Return value: A JSON object containing rating information of movies in the filtered category. Returned fields are:</p>
@@ -83,7 +83,7 @@
         <p class="h4" id="getDecadeScores">getDecadeScores</p>
             <p>Parameter:
             <ul>
-                <li>category (currently: country, title, cast, writers, directors and genres)</li>
+                <li>category (currently: country, title, castmember, writers, directors and genres)</li>
                 <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
             </ul></p>
             <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by decades. Returned fields are:</p>
@@ -105,10 +105,10 @@
                     <tr><td>decades</td><td>A field containing sub fields of decades with results from search, each containing the total fields above.</td></tr>
                 </tbody>
             </table>
-            <p>Example (for a call to https://bechdelbash.herokuapp.com/api/getDecadeScores?category=cast&filterterm=Pat%20Carroll):</p>
+            <p>Example (for a call to https://bechdelbash.herokuapp.com/api/getDecadeScores?category=castmember&filterterm=Pat%20Carroll):</p>
 <pre>{
   "method": "getDecadeScores",
-  "category": "cast",
+  "category": "castmember",
   "filterTerm": "Pat Carroll",
   "totalRated": 8,
   "totalAverage": "2.625",
@@ -141,7 +141,7 @@
         <p class="h4" id="getYearlyScores">getYearlyScores</p>
             <p>Parameter:
             <ul>
-                <li>category (currently: country, title, cast, writers, directors and genres)</li>
+                <li>category (currently: country, title, castmember, writers, directors and genres)</li>
                 <li>filterterm (filter for the category, _ and % can be used to replace a single or group of placeholder characters)</li>
             </ul></p>
             <p> Return value: A JSON object containing rating information of movies in the filtered category and details sorted by years. Returned fields are:</p>

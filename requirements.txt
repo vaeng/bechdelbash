@@ -1,3 +1,5 @@
 gunicorn
 flask
 psycopg2-binary
+imdbpy
+fnmatch

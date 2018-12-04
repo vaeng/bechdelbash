@@ -4,6 +4,7 @@ from flask import Flask, jsonify, render_template, request, Response
 import psycopg2
 from psycopg2 import sql
 import json
+from helpers import column2array, arrayfilter
 
 
 # Set up database
@@ -11,7 +12,11 @@ DATABASE_URL = os.environ['DATABASE_URL']
 connection = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = connection.cursor()
 
-
+genrearray = column2array("genres", cursor)
+countryarray = column2array("country", cursor)
+castarray = column2array("castmember", cursor)
+writersarray = column2array("writers", cursor)
+directorsarray = column2array("directors", cursor)
 
 # Configure application
 app = Flask(__name__)
@@ -136,6 +141,33 @@ def showAbout():
 @app.route('/')
 def index():
     return render_template("index.html")
+
+
+@app.route('/search/<category>/<query>/<limit>')
+def search(category,query,limit):
+
+    if limit.isdigit():
+        limit = int(limit)
+    else:
+        return Response(json.dumps({"error" : "limit must be ineger"}),  mimetype='application/json', status=400)
+
+    filteredarray = []
+    targetarray = []
+    if category == "genres":
+        targetarray = genrearray
+    elif category == "country":
+        targetarray = countryarray
+    elif category == "castmember":
+        targetarray = castarray
+    elif category == "writers":
+        targetarray = writersarray
+    elif category == "directors":
+        targetarray = directorsarray
+
+    filteredarray = arrayfilter(targetarray, query)
+    returndict = {'totalresults' : len(filteredarray), 'category' : category, 'query' : query, 'limit' : limit, 'results' : filteredarray[:int(limit)]}
+    return Response(json.dumps(returndict),  mimetype='application/json', status=200)
+
 
 if __name__ == '__main__':
    app.run(debug = True)

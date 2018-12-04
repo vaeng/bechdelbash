@@ -1,61 +1,30 @@
-<! — "Child Template" ->
-{% extends "base.html" %} {% block head_additions %}
-<script type="text/javascript" src="/static/script.js"></script>
-<!-- Charts.js libraries -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-<!-- Charts.js stacked to 100% plugin from: https://github.com/y-takey/chartjs-plugin-stacked100 -->
-<script type="text/javascript" src="/static/chart.js_plugins/chartjs-plugin-stacked100.js"></script>
-<!-- Charts.js Datalabel plugin from: https://github.com/chartjs/chartjs-plugin-datalabels -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+{% extends "base.html" %}
+{% block head_additions %}
+<link rel="stylesheet" href="/static/bootstrap_with_typeahead.css">
 {% endblock %}
-
 {% block title %} Bechdel Bash! {% endblock %}
+
+{% block navbar_buttons %}
+{% endblock %}
 
 {% block body_add%}
 <div class="container-fluid">
-    <div class="row"><p> </p></div>
+	<div class="row"></div>
     <div class="form-row justify-content-center">
 
 		<div class="col-auto form-inline">
 			<div class="form-group">
-				<label for="leftcategory" class="mr-2">First category: </label>
-				<select id='leftcategory' class="form-control form-control-sm mr-3">
-					<option value='title'>Title</option>
-					<option value='genres'>Genres</option>
-					<option value='cast'>Cast</option>
-					<option value='writers'>Writing</option>
-					<option value='directors'>Directing</option>
-					<option value='country'>Country</option>
-				</select>
-			</div>
-
-
-			<div class="form-group">
-				<label for="leftfilterterm" class="mr-2">First filter: </label>
-				<input type='text' id='leftfilterterm' value='' class="form-control form-control-sm"/>
+				<label for="form1">Bash this</label>
+				<input id="form1" class="typeahead form-control" type="text" placeholder="Genre, country or person">
+				<small id="searchHelp" class="form-text text-muted">* can be used as a placeholder</small>
 			</div>
 		</div>
 
-
 		<div class="col-auto form-inline">
-			<div class="form-group">
-				<label for="rightcategory" class="mr-2">Second category: </label>
-				<select id='rightcategory' class="form-control form-control-sm mr-3">
-					<option value='title'>Title</option>
-					<option value='genres'>Genres</option>
-					<option value='cast'>Cast</option>
-					<option value='writers'>Writing</option>
-					<option value='directors'>Directing</option>
-					<option value='country'>Country</option>
-				</select>
-			</div>
-
-
-			<div class="form-group">
-				<label for="rightfilterterm" class="mr-2">Second filter: </label>
-				<input type='text' id='rightfilterterm' value='' class="form-control form-control-sm" />
-			</div>
+		    <div class="form-group">
+		      <label for="form2">Bash this</label>
+		      <input id="form2" class="typeahead form-control" type="text" placeholder="Genre, country or person">
+		    </div>
 		</div>
 	</div>
 
@@ -66,17 +35,17 @@
 		<div class="offset-sm-1"></div>
 		<div class="col-auto">
 			<div class="btn-group d-flex" role="group">
-				<button type="button" onclick='update_chart("getTotalScore")' class="btn btn-info w-100 mb-2">Total Score</button>
+				<button id="totalbutton" type="button" disabled onclick='update_chart("getTotalScore")' class="btn btn-info w-100 mb-2">Total Score</button>
 			</div>
 		</div>
 		<div class="col-auto ml-3 mr-3">
 			<div class="btn-group d-flex" role="group">
-				<button type="button" onclick='update_chart("getYearlyScores")' class="btn btn-info w-100 mb-2">Score by years</button>
+				<button id="yearlybutton" type="button" disabled onclick='update_chart("getYearlyScores")' class="btn btn-info w-100 mb-2">Score by years</button>
 			</div>
 		</div>
 		<div class="col-auto">
 			<div class="btn-group d-flex" role="group">
-				<button type="button" onclick='update_chart("getDecadeScores")' class="btn btn-info w-100 mb-2">Score by Decades</button>
+				<button id="decadesbutton" type="button" disabled onclick='update_chart("getDecadeScores")' class="btn btn-info w-100 mb-2">Score by Decades</button>
 			</div>
 		</div>
 		<div class="offset-sm-1"></div>
@@ -91,14 +60,40 @@
             <div id="shares" class="d-none">
                 <p class="text-center text-muted">Share this Bechdel Bash as <a id="shareURL" href="#">image</a> or <a id="shareLink" href="#">link.</a></p>
             </div>
+            <hr>
+            <div id="footer">
+            	<p class="text-center text-muted">
+            		The Bechdel test is a vey simple way to check how or
+            		even if female characters are participating in a film.
+            		A higher score generally means more participation.
+            		Here you can oppose two cinematic factors and see their performance
+            		over all respective movies or sorted by decades or years.
+            		More information is available <a href="/about">here</a>.
+            	</p>
+            </div>
         </div>
         <div class="offset-sm-2"></div>
     </div>
 </div>
 
-<script>
-$(document).ready(checkParams());
-</script>
-
 {% endblock %}
 
+{% block js_sctipt_add %}
+<!-- Charts.js libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+<!-- Charts.js stacked to 100% plugin from: https://github.com/y-takey/chartjs-plugin-stacked100 -->
+<script type="text/javascript" src="/static/chart.js_plugins/chartjs-plugin-stacked100.js"></script>
+
+<!-- Charts.js Datalabel plugin from: https://github.com/chartjs/chartjs-plugin-datalabels -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<!-- Typeahead: https://github.com/corejavascript/typeahead.js corejs-typeahead -->
+<script src="https://cdn.jsdelivr.net/npm/corejs-typeahead@1.2.0/dist/typeahead.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/corejs-typeahead@1.2.0/dist/typeahead.bundle.min.js"></script>
+
+<!-- Control scripts -->
+<script src="/static/typeahead_controls.js"></script>
+<script src="/static/chart_control.js"></script>
+{% endblock %}

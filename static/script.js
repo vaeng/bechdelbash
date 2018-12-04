@@ -6,6 +6,14 @@ var labeltext3 = "About something besides a man";
 var imgurl =""; // url to the image for sharing
 var methodused = "";
 
+var chartColor0top = "rgb(142,40,0)";
+var chartColor1top = "rgb(182,73,38)";
+var chartColor2top = "rgb(255,176,59)";
+var chartColor3top = "rgb(70,137,102)";
+var chartColor0bottom = "rgb(255, 99, 71)";
+var chartColor1bottom = "rgb(255, 165, 0)";
+var chartColor2bottom = "rgb(30, 144, 255)";
+var chartColor3bottom = "rgb(60, 179, 113)";
 
 // function to handle parameters to set the forms
 function checkParams() {
@@ -22,7 +30,7 @@ function checkParams() {
         if(!c1 || !c2  || !f1  || !f2) {
           //not enought input variables
         } else {
-            var validCats = ["title", "genres", "country", "writers", "cast", "directors"];
+            var validCats = ["title", "genres", "country", "writers", "castmember", "directors"];
             if (validCats.includes(c1) && validCats.includes(c2)) {
                 $('#leftcategory').val(c1);
                 $('#leftfilterterm').val(f1);
@@ -144,7 +152,6 @@ function generateImage(){
     $("#shares").removeClass('d-none'); // To show it
     imgurl=bechdelchart.toBase64Image();
     var pathname = window.location.pathname;
-    console.log(pathname);
     var hostnamepart = "https://" + window.location.hostname + window.location.pathname;
     var parameterpart = "?m=" + methodused + "&c1=" + $('#leftcategory').val() + "&f1=" + $('#leftfilterterm').val() + "&c2=" + $('#rightcategory').val() + "&f2=" + $('#rightfilterterm').val();
     var linkurl = encodeURI( hostnamepart + parameterpart);
@@ -260,46 +267,46 @@ function generateData(jsondata1, jsondata2) {
         label: labeltext0,
         data: data1_0,
         stack: "Stack 0",
-        backgroundColor: "rgb(255, 99, 71)",
-        hoverBackgroundColor: "rgb(255, 99, 71)"
+        backgroundColor: chartColor0top,
+        hoverBackgroundColor: chartColor0top
     }, {
         label: labeltext1,
         data: data1_1,
         stack: "Stack 0",
-        backgroundColor: "rgb(255, 165, 0)",
-        hoverBackgroundColor: "rgb(255, 165, 0)"
+        backgroundColor: chartColor1top,
+        hoverBackgroundColor: chartColor1top
     }, {
         label: labeltext2,
         data: data1_2,
         stack: "Stack 0",
-        backgroundColor: "rgb(30, 144, 255)",
-        hoverBackgroundColor: "rgb(30, 144, 255)"
+        backgroundColor: chartColor2top,
+        hoverBackgroundColor:chartColor2top
     }, {
         label: labeltext3,
         data: data1_3,
         stack: "Stack 0",
-        backgroundColor: "rgb(60, 179, 113)",
-        hoverBackgroundColor: "rgb(60, 179, 113)"
+        backgroundColor: chartColor3top,
+        hoverBackgroundColor:chartColor3top
     }, {
         data: data2_0,
         stack: "Stack 1",
-        backgroundColor: "rgb(255, 147, 128)",
-        hoverBackgroundColor: "rgb(255, 147, 128)"
+        backgroundColor: chartColor0bottom,
+        hoverBackgroundColor: chartColor0bottom
     }, {
         data: data2_1,
         stack: "Stack 1",
-        backgroundColor: "rgb(255, 193, 77)",
-        hoverBackgroundColor: "rgb(255, 193, 77)"
+        backgroundColor: chartColor1bottom,
+        hoverBackgroundColor: chartColor1bottom
     }, {
         data: data2_2,
         stack: "Stack 1",
-        backgroundColor: "rgb(77, 166, 255)",
-        hoverBackgroundColor: "rgb(77, 166, 255)"
+        backgroundColor: chartColor2bottom,
+        hoverBackgroundColor: chartColor2bottom
     }, {
         data: data2_3,
         stack: "Stack 1",
-        backgroundColor: "rgb(102, 204, 148)",
-        hoverBackgroundColor: "rgb(102, 204, 148)"
+        backgroundColor: chartColor3bottom,
+        hoverBackgroundColor: chartColor3bottom
     }];
 
     generatedData = {
@@ -311,7 +318,6 @@ function generateData(jsondata1, jsondata2) {
 }
 
 function randomizeForms(){
-    console.log("random works");
     var keys = Object.keys(exampleEntries);
     // taken from: https://stackoverflow.com/questions/2532218/pick-random-property-from-a-javascript-object
     var randomProperty = exampleEntries[keys[ keys.length * Math.random() << 0]];
@@ -335,8 +341,8 @@ var exampleEntries = {
         f2: "Romance"
     },
     3 :{
-        c1: "cast",
-        c2: "cast",
+        c1: "castmember",
+        c2: "castmember",
         f1: "Betty White",
         f2: "Jack Black"
     },
