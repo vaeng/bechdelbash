@@ -5,6 +5,12 @@ import psycopg2
 from psycopg2 import sql
 import json
 from helpers import column2array, arrayfilter
+from flask_compress import Compress
+
+# compression
+COMPRESS_MIMETYPES = ['text/html', 'text/css', 'text/xml', 'application/json', 'application/javascript']
+COMPRESS_LEVEL = 6
+COMPRESS_MIN_SIZE = 500
 
 
 # Set up database
@@ -20,6 +26,7 @@ directorsarray = column2array("directors", cursor)
 
 # Configure application
 app = Flask(__name__)
+Compress(app)
 
 
 # Ensure responses aren't cached
