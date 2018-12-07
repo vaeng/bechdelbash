@@ -37,14 +37,11 @@ def main():
             unique_imdbids[x] += 1
     # Delete duplicates
     deletestring = "DELETE FROM list WHERE imdbid = %s;"
-    counter = 0
     for duplicate_imdb in duplicate_entries:
         try:
             cursor.execute(deletestring, (duplicate_imdb,))
-            counter += 1
         except:
             pass
-    print("Deleted %i duplcates" % (counter))
     already_inserted = []
     for film in data:
         imdbid = film['imdbid']
@@ -96,7 +93,7 @@ def get_people(movie, category):
 
 def get_list(movie, category):
     try:
-        itemlist = movie['countries']
+        itemlist = movie[category]
         refined_list = ','.join(a for a in itemlist)
         return refined_list
     except:

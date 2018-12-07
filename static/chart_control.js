@@ -17,58 +17,75 @@ function checkParams() {
     var m = url.searchParams.get("m");
     var validMethods = ["getTotalScore", "getDecadeScores", "getYearlyScores"];
     if (validMethods.includes(m)) {
-        if(!c1 || !c2  || !f1  || !f2) {
+        if(!category1 || !category2  || !filterterm1  || !filterterm2) {
           //not enought input variables
         } else {
             var validCats = ["title", "genres", "country", "writers", "castmember", "directors"];
-            if (validCats.includes(c1) && validCats.includes(c2)) {
-                $('#form1').val(f1);
-                $('#form2').val(f2);
+            if (validCats.includes(category1) && validCats.includes(category2)) {
+                change_cat(category1, "top")
+                change_cat(category2, "bottom")
+                $('#form1').val(filterterm1);
+                $('#form2').val(filterterm2);
+                $( "#totalbutton" ).prop( "disabled", false );
+                $( "#yearlybutton" ).prop( "disabled", false );
+                $( "#decadesbutton" ).prop( "disabled", false );
                 update_chart(m);
             }
         }
     }
 }
+// https://stackoverflow.com/questions/52603754/get-bootstraps-current-theme-colors-in-javascript
+var style = getComputedStyle(document.body);
+var theme = {};
 
+theme.primary = style.getPropertyValue('--primary');
+theme.secondary = style.getPropertyValue('--secondary');
+theme.success = style.getPropertyValue('--success');
+theme.info = style.getPropertyValue('--info');
+theme.warning = style.getPropertyValue('--warning');
+theme.danger = style.getPropertyValue('--danger');
+theme.light = style.getPropertyValue('--light');
+theme.dark = style.getPropertyValue('--dark');
 
+var chartColor0top = theme.danger;
+var chartColor1top = theme.warning;
+var chartColor2top = theme.secondary;
+var chartColor3top = theme.info;
+var chartColor0bottom = (theme.danger).replace(')', ', 0.8)').replace('rgb', 'rgba'); //opacity 0.65  .btn.disabled, .btn:disabled {     opacity: 0.65;}
+var chartColor1bottom = (theme.warning).replace(')', ', 0.8)').replace('rgb', 'rgba');
+var chartColor2bottom = (theme.secondary).replace(')', ', 0.8)').replace('rgb', 'rgba');
+var chartColor3bottom = (theme.info).replace(')', ', 0.8)').replace('rgb', 'rgba');
 
-var chartColor0top = "rgb(142,40,0)";
-var chartColor1top = "rgb(182,73,38)";
-var chartColor2top = "rgb(255,176,59)";
-var chartColor3top = "rgb(70,137,102)";
-var chartColor0bottom = "rgb(255, 99, 71)";
-var chartColor1bottom = "rgb(255, 165, 0)";
-var chartColor2bottom = "rgb(30, 144, 255)";
-var chartColor3bottom = "rgb(60, 179, 113)";
-
-// function to handle parameters to set the forms
-function checkParams() {
-    randomizeForms();
-    var url_string = window.location.href;
-    var url = new URL(url_string);
-    var c1 = url.searchParams.get("c1");
-    var c2 = url.searchParams.get("c2");
-    var f1 = url.searchParams.get("f1");
-    var f2 = url.searchParams.get("f2");
-    var m = url.searchParams.get("m");
-    var validMethods = ["getTotalScore", "getDecadeScores", "getYearlyScores"];
-    if (validMethods.includes(m)) {
-        if(!c1 || !c2  || !f1  || !f2) {
-          //not enought input variables
-        } else {
-            var validCats = ["title", "genres", "country", "writers", "castmember", "directors"];
-            if (validCats.includes(c1) && validCats.includes(c2)) {
-                $('#leftcategory').val(c1);
-                $('#leftfilterterm').val(f1);
-                $('#rightcategory').val(c2);
-                $('#rightfilterterm').val(f2);
-                update_chart(m);
-            }
-        }
-    }
-}
 
 function update_chart(method) {
+    // category1, category2, filterterm1, filterterm2
+    if(category1 && category2 && filterterm1 && filterterm2){
+        // all fine
+            $('#top_cat_selector').removeClass("btn-danger");
+            $('#bottom_cat_selector').removeClass("btn-danger");
+            $('#form1').removeClass("is-invalid");
+            $('#form2').removeClass("is-invalid");
+            $('#alert_placeholder').html("");
+    } else {
+        $('#alert_placeholder').html('<div class="alert alert-warning alert-dismissible"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Missing data!</strong> Please check red field(s) above.</div>');
+        if (!category1) {
+            $('#top_cat_selector').addClass("btn-danger");
+        }
+        if (!category2) {
+            $('#bottom_cat_selector').addClass("btn-danger");
+        }
+        if (!filterterm1) {
+            $('#form1').addClass("is-invalid");
+        }
+        if (!filterterm2) {
+            $('#form2').addClass("is-invalid");
+        }
+
+        return "";
+    }
+
+
+
     var data1 = null;
     var data2 = null;
     methodused = method;
@@ -111,6 +128,12 @@ function generateChart(data1, data2) {
     var barOptions_stacked = {
         plugins: {
             stacked100: { enable: true, replaceTooltipLabel: false },
+            chartJsPluginSubtitle: {
+                display: true,
+                text:	parseFloat(Math.round(data1.totalAverage * 100) / 100).toFixed(3) + " - " + parseFloat(Math.round(data2.totalAverage * 100) / 100).toFixed(3),
+                fontSize: 16,
+
+            },
 
             datalabels: {
 						color: 'white',
@@ -122,14 +145,36 @@ function generateChart(data1, data2) {
 						formatter: (_value, context) => {
                           const data = context.chart.data;
                           const { datasetIndex, dataIndex } = context;
-                          return `${data.calculatedData[datasetIndex][dataIndex]}% (${data.originalData[datasetIndex][dataIndex]})`;
-                        }
+                          return [`${data.calculatedData[datasetIndex][dataIndex]}%`,`(${data.originalData[datasetIndex][dataIndex]})`];
+                        },
+                        textAlign: 'center'
 					}
+        },
+        layout: {
+            padding: {
+                left: 0,
+                right: 0, //60 to align the 50% mark with the middle of the site, but then the title is not centered any more
+                top: 0,
+                bottom: 0
+            },
         },
         scales: {
             yAxes: [{
                 maxBarThickness: 100,
-                    }]},
+                ticks: {
+                  autoSkip: false,
+                  maxRotation: 45,
+                  minRotation: 45
+                }
+                    }],
+            xAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: "%",
+                },
+            }]
+        },
+
 
         responsive: true,
         maintainAspectRatio: false, // to be able to scale with scaleheight in update_chart()
@@ -148,6 +193,7 @@ function generateChart(data1, data2) {
                     }
                     return true;
                 },
+
             },
         },
         animation : {
@@ -156,7 +202,7 @@ function generateChart(data1, data2) {
 
         title: {
           display : true,
-          text : [data1.filterTerm + " vs. " + data2.filterTerm, parseFloat(Math.round(data1.totalAverage * 100) / 100).toFixed(3) + " - " + parseFloat(Math.round(data2.totalAverage * 100) / 100).toFixed(3)],
+          text : data1.filterTerm + " vs. " + data2.filterTerm,
           fontSize : 20,
         },
     };

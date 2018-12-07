@@ -9,55 +9,80 @@
 
 {% block body_add%}
 <div class="container-fluid">
-	<div class="row"></div>
-    <div class="form-row justify-content-center">
-
-		<div class="col-auto form-inline">
-			<div class="form-group">
-				<label for="form1">Bash this</label>
+    <div class="form-row justify-content-center mt-3">
+		<div class="col-auto">
+			<div class="btn-group d-flex">
 				<input id="form1" class="typeahead form-control" type="text" placeholder="Genre, country or person">
-				<small id="searchHelp" class="form-text text-muted">* can be used as a placeholder</small>
-			</div>
-		</div>
 
-		<div class="col-auto form-inline">
-		    <div class="form-group">
-		      <label for="form2">Bash this</label>
-		      <input id="form2" class="typeahead form-control" type="text" placeholder="Genre, country or person">
-		    </div>
+				<button id="top_cat_selector" class="btn input-group-append btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Category</button>
+				<div class="dropdown-menu">
+					<button id = "top_select_genres" class="dropdown-item" onclick='change_cat("genres", "top")' type="button">as genre</button>
+					<button id = "top_select_country" class="dropdown-item" onclick='change_cat("country", "top")' type="button">as country</button>
+					<button id = "top_select_castmember" class="dropdown-item" onclick='change_cat("castmember", "top")' type="button">as cast</button>
+					<button id = "top_select_writers" class="dropdown-item" onclick='change_cat("writers", "top")' type="button">as writer</button>
+					<button id = "top_select_directors" class="dropdown-item" onclick='change_cat("directors", "top")' type="button">as director</button>
+					<button id = "top_select_title" class="dropdown-item" onclick='change_cat("title", "top")' type="button">as title</button>
+				</div>
+			</div>
+			<small id="searchHelp1" class="form-text text-muted"></small>
 		</div>
 	</div>
+	<div class="form-row justify-content-center mt-3">
+		<div class="col-sm-1 justify-content-center">
+			<center><strong>vs.</strong></center>
+		</div>
+	</div>
+	<div class="form-row justify-content-center mt-3">
+		<div class="col-auto">
+			<div class="btn-group d-flex">
+				<input id="form2" class="typeahead form-control" type="text" placeholder="Genre, country or person">
 
-    <div class="row"></div>
-    <div class="container-fluid">
+				<button id="bottom_cat_selector" class="btn input-group-append btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Category</button>
+				<div class="dropdown-menu">
+					<button id = "bottom_select_genres" class="dropdown-item" onclick='change_cat("genres", "bottom")' type="button">as genre</button>
+					<button id = "bottom_select_country" class="dropdown-item" onclick='change_cat("country", "bottom")' type="button">as country</button>
+					<button id = "bottom_select_castmember" class="dropdown-item" onclick='change_cat("castmember", "bottom")' type="button">as cast</button>
+					<button id = "bottom_select_writers" class="dropdown-item" onclick='change_cat("writers", "bottom")' type="button">as writer</button>
+					<button id = "bottom_select_directors" class="dropdown-item" onclick='change_cat("directors", "bottom")' type="button">as director</button>
+					<button id = "bottom_select_title" class="dropdown-item" onclick='change_cat("title", "bottom")' type="button">as title</button>
+				</div>
+			</div>
+			<small id="searchHelp2" class="form-text text-muted">* can be used as a placeholder</small>
+		</div>
+	</div>
+    <div class="row">
+    </div>
+</div>
+<div class="container-fluid">
 	<div class="row"><p> </p></div>
 	<div class="row justify-content-center no-gutters mb-2">
 		<div class="offset-sm-1"></div>
 		<div class="col-auto">
 			<div class="btn-group d-flex" role="group">
-				<button id="totalbutton" type="button" disabled onclick='update_chart("getTotalScore")' class="btn btn-info w-100 mb-2">Total Score</button>
+				<button id="totalbutton" type="button" onclick='update_chart("getTotalScore")' class="btn btn-primary w-100 mb-2">Bash all movies</button>
 			</div>
 		</div>
 		<div class="col-auto ml-3 mr-3">
 			<div class="btn-group d-flex" role="group">
-				<button id="yearlybutton" type="button" disabled onclick='update_chart("getYearlyScores")' class="btn btn-info w-100 mb-2">Score by years</button>
+				<button id="yearlybutton" type="button" onclick='update_chart("getYearlyScores")' class="btn btn-primary w-100 mb-2">Bash by years</button>
 			</div>
 		</div>
 		<div class="col-auto">
 			<div class="btn-group d-flex" role="group">
-				<button id="decadesbutton" type="button" disabled onclick='update_chart("getDecadeScores")' class="btn btn-info w-100 mb-2">Score by Decades</button>
+				<button id="decadesbutton" type="button" onclick='update_chart("getDecadeScores")' class="btn btn-primary w-100 mb-2">Bash by Decades</button>
 			</div>
 		</div>
 		<div class="offset-sm-1"></div>
 	</div>
-</div>
     <div class="row">
         <div class="offset-sm-2"></div>
         <div class="col-sm-8 mt-3">
+        	<div id="alert_placeholder"><div class="alert alert-warning alert-dismissible"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Missing data!</strong> Please check red field(s) above.</div></div>
+
             <div id="graph-container" class="chart-container">
                 <canvas id="graph" class="mb-3"></canvas>
             </div>
-            <div id="shares" class="d-none">
+            <div id="shares" class="d-none mt-2">
                 <p class="text-center text-muted">Share this Bechdel Bash as <a id="shareURL" href="#">image</a> or <a id="shareLink" href="#">link.</a></p>
             </div>
             <hr>
@@ -80,20 +105,25 @@
 
 {% block js_sctipt_add %}
 <!-- Charts.js libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
 <!-- Charts.js stacked to 100% plugin from: https://github.com/y-takey/chartjs-plugin-stacked100 -->
 <script type="text/javascript" src="/static/chart.js_plugins/chartjs-plugin-stacked100.js"></script>
+<!-- Charts.js Chart.js Subtitle Plugin from: https://github.com/jeredmasters/chartjs-subtitle -->
+<script type="text/javascript" src="/static/chart.js_plugins/plugin.subtitle-min.js"></script>
+
 
 <!-- Charts.js Datalabel plugin from: https://github.com/chartjs/chartjs-plugin-datalabels -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <!-- Typeahead: https://github.com/corejavascript/typeahead.js corejs-typeahead -->
 <script src="https://cdn.jsdelivr.net/npm/corejs-typeahead@1.2.0/dist/typeahead.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/corejs-typeahead@1.2.0/dist/typeahead.bundle.min.js"></script>
+
 
 <!-- Control scripts -->
 <script src="/static/typeahead_controls.js"></script>
 <script src="/static/chart_control.js"></script>
+<script>
+	$(document).ready(checkParams());
+</script>
 {% endblock %}
