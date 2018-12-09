@@ -192,5 +192,11 @@ def manifest():
     return app.send_static_file('manifest.json')
 
 
+@app.route('/googlea412d8d5e81b4581.html', methods=['GET'])
+def google():
+    return "google-site-verification: googlea412d8d5e81b4581.html"
+
+
+
 if __name__ == '__main__':
    app.run(debug = True)
