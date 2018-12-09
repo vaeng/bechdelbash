@@ -1,12 +1,6 @@
 {
     "name": "Bechdel:Bash!",
-    "short_name": "Bechdel:Bash",
-    "description": "Compare the Bechdel Score of different movie categories.",
-    "theme_color": "#3a3b40",
-    "background_color": "#7089a5",
-    "display": "minimal-ui",
-    "Scope": "/",
-    "start_url": "/",
+    "short_name": "Bechdel:Bash!",
     "icons": [
         {
             "src": "/static/favicons/android-chrome-192x192.png",
@@ -19,5 +13,7 @@
             "type": "image/png"
         }
     ],
-    "splash_pages": null
+    "theme_color": "#3a3b40",
+    "background_color": "#3a3b40",
+    "start_url": "https://bechdelbash.herokuapp.com/"
 }
