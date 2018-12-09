@@ -9,47 +9,47 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "/static/facvicons/apple-touch-icon-72x72.png",
+      "src": "/static/favicons/apple-touch-icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/favicon-96x96.png",
+      "src": "/static/favicons/favicon-96x96.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/favicon-128x128.png",
+      "src": "/static/favicons/favicon-128x128.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/apple-touch-icon-144x144.png",
+      "src": "/static/favicons/apple-touch-icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/apple-touch-icon-152x152.png",
+      "src": "/static/favicons/apple-touch-icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/favicon-196x196.png",
+      "src": "/static/favicons/favicon-196x196.png",
       "sizes": "196x196",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/icon-192x192.png",
+      "src": "/static/favicons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/icon-384x384.png",
+      "src": "/static/favicons/icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "/static/facvicons/icon-512x512.png",
+      "src": "/static/favicons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
