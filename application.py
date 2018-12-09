@@ -6,6 +6,8 @@ from psycopg2 import sql
 import json
 from helpers import column2array, arrayfilter
 from flask_compress import Compress
+from flask_sslify import SSLify
+
 
 # compression
 COMPRESS_MIMETYPES = ['text/html', 'text/css', 'text/xml', 'application/json', 'application/javascript']
@@ -27,15 +29,16 @@ directorsarray = column2array("directors", cursor)
 # Configure application
 app = Flask(__name__)
 Compress(app)
+sslify = SSLify(app)
 
 
 # Ensure responses aren't cached
-@app.after_request
-def after_request(response):
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Expires"] = 0
-    response.headers["Pragma"] = "no-cache"
-    return response
+# @app.after_request
+# def after_request(response):
+#    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+#    response.headers["Expires"] = 0
+#    response.headers["Pragma"] = "no-cache"
+#    return response
 
 @app.route('/<category>/<filters>/')
 def bechdelresults(category, filters):
@@ -174,6 +177,19 @@ def search(category,query,limit):
     filteredarray = arrayfilter(targetarray, query)
     returndict = {'totalresults' : len(filteredarray), 'category' : category, 'query' : query, 'limit' : limit, 'results' : filteredarray[:int(limit)]}
     return Response(json.dumps(returndict),  mimetype='application/json', status=200)
+
+
+@app.route('/serviceWorker.js', methods=['GET'])
+def sw():
+    return app.send_static_file('serviceWorker.js')
+
+@app.route('/offline.html', methods=['GET'])
+def offline():
+    return app.send_static_file('offline.html')
+
+@app.route('/manifest.json', methods=['GET'])
+def manifest():
+    return app.send_static_file('manifest.json')
 
 
 if __name__ == '__main__':

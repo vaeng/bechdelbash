@@ -3,3 +3,4 @@ flask
 psycopg2-binary
 imdbpy
 flask-compress
+flask_sslify
