@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block head_additions %}
 <link rel="stylesheet" href="/static/bootstrap_with_typeahead.css">
-<meta name="description" content="The Bechdel test bash is on! Oppose two cinematic factors, like cast members, genres, countries, directors, or writers and see their score over all respective movies. A higher score indicates how, or even if, female characters are participating in a film. Handy graphs show the development of equality and participation in Hollywood and around the world.">
 {% endblock %}
 {% block title %} Bechdel Bash! {% endblock %}
 
@@ -84,7 +83,7 @@
                 <canvas id="graph" class="mb-3"></canvas>
             </div>
             <div id="shares" class="d-none mt-2">
-                <p class="text-center text-muted">Share this Bechdel Bash as <a id="shareURL" href="#">image</a> or <a id="shareLink" href="#">link.</a></p>
+                <p class="text-center text-muted">Share this Bechdel Bash as <a id="shareImg" href="#" download="bechdel-chart.png">image</a> or <a id="shareLink" href="#">link.</a></p>
             </div>
             <hr>
             <div id="footer">
@@ -94,7 +93,7 @@
             		A higher score generally means more participation.
             		Here you can oppose two cinematic factors and see their performance
             		over all respective movies or sorted by decades or years.
-            		More information are available in the <a href="/about">about section.</a>.
+            		More information is available <a href="/about">here</a>.
             	</p>
             </div>
         </div>

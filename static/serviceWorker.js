@@ -1,6 +1,8 @@
 // This is based on the First Progressive Web App Tutorial by Google
 // https://codelabs.developers.google.com/codelabs/your-first-pwapp/
 const cacheName = 'flask-PWA-v1';
+const dataCacheName = 'bash-data-v1';
+
 const filesToCache = [
     '/static/chart.js_plugins/chartjs-plugin-stacked100.js',
     '/static/chart.js_plugins/plugin.subtitle-min.js',
@@ -33,7 +35,7 @@ self.addEventListener('activate', function(e) {
     e.waitUntil(
     caches.keys().then(function(keyList) {
       return Promise.all(keyList.map(function(key) {
-        if (key !== cacheName) {
+        if (key !== cacheName  && key !== dataCacheName) {
           //console.log('[ServiceWorker] Removing old cache', key);
           return caches.delete(key);
         }
@@ -51,36 +53,50 @@ self.addEventListener('activate', function(e) {
 // Service Worker Precache module https://github.com/GoogleChromeLabs/sw-precache
 self.addEventListener('fetch', function(e) {
   //console.log('[ServiceWorker] Fetch', e.request.url);
-  e.respondWith(
-    caches.match(e.request).then(function(response) {
-      return response || fetch(e.request).catch(error => {
-          //console.log('Fetch failed; returning offline page instead.', error);
+  var dataUrl = '../search';
 
-          // In reality you'd have many different
-          // fallbacks, depending on URL & headers.
-          // Eg, a fallback silhouette image for avatars.
-          let url = e.request.url;
-          let extension = url.split('.').pop();
+  // Check if this is data or app shell request
+  if (e.request.url.indexOf(dataUrl) > -1) {
+    e.respondWith(
+      caches.open(dataCacheName).then(function(cache) {
+        return fetch(e.request).then(function(response){
+          cache.put(e.request.url, response.clone());
+          return response;
+        });
+      })
+    );
+  } else {
+    e.respondWith(
+      caches.match(e.request).then(function(response) {
+        return response || fetch(e.request).catch(error => {
+            //console.log('Fetch failed; returning offline page instead.', error);
 
-          if (extension === 'jpg' || extension === 'png') {
+            // In reality you'd have many different
+            // fallbacks, depending on URL & headers.
+            // Eg, a fallback silhouette image for avatars.
+            let url = e.request.url;
+            let extension = url.split('.').pop();
 
-              const FALLBACK_IMAGE = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="180" stroke-linejoin="round">
-                <path stroke="#DDD" stroke-width="25" d="M99,18 15,162H183z"/>
-                <path stroke-width="17" fill="#FFF" d="M99,18 15,162H183z" stroke="#eee"/>
-                <path d="M91,70a9,9 0 0,1 18,0l-5,50a4,4 0 0,1-8,0z" fill="#aaa"/>
-                <circle cy="138" r="9" cx="100" fill="#aaa"/>
-                </svg>`;
-              // const FALLBACK_IMAGE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm16 8.59V6H4v6.59l4.3-4.3a1 1 0 0 1 1.4 0l5.3 5.3 2.3-2.3a1 1 0 0 1 1.4 0l1.3 1.3zm0 2.82l-2-2-2.3 2.3a1 1 0 0 1-1.4 0L9 10.4l-5 5V18h16v-2.59zM15 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>`;
-              return Promise.resolve(new Response(FALLBACK_IMAGE, {
-                  headers: {
-                      'Content-Type': 'image/svg+xml'
-                  }
-              }));
-          }
+            if (extension === 'jpg' || extension === 'png') {
 
-          // Then we can have a default fallback for web pages to show an offline page
-          return caches.match('offline.html');
-      });
-    })
-  );
+                const FALLBACK_IMAGE = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="180" stroke-linejoin="round">
+                  <path stroke="#DDD" stroke-width="25" d="M99,18 15,162H183z"/>
+                  <path stroke-width="17" fill="#FFF" d="M99,18 15,162H183z" stroke="#eee"/>
+                  <path d="M91,70a9,9 0 0,1 18,0l-5,50a4,4 0 0,1-8,0z" fill="#aaa"/>
+                  <circle cy="138" r="9" cx="100" fill="#aaa"/>
+                  </svg>`;
+                // const FALLBACK_IMAGE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm16 8.59V6H4v6.59l4.3-4.3a1 1 0 0 1 1.4 0l5.3 5.3 2.3-2.3a1 1 0 0 1 1.4 0l1.3 1.3zm0 2.82l-2-2-2.3 2.3a1 1 0 0 1-1.4 0L9 10.4l-5 5V18h16v-2.59zM15 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>`;
+                return Promise.resolve(new Response(FALLBACK_IMAGE, {
+                    headers: {
+                        'Content-Type': 'image/svg+xml'
+                    }
+                }));
+            }
+
+            // Then we can have a default fallback for web pages to show an offline page
+            return caches.match('offline.html');
+        });
+      })
+    );
+  }
 });
