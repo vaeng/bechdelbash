@@ -217,7 +217,6 @@ function generateChart(data1, data2) {
 
 //will generate image code and link and refresh link
 function generateImage(){
-    console.log("generate Image started");
     $("#shares").removeClass('d-none'); // To show it
     var imgurl=bechdelchart.toBase64Image();
     var hostnamepart = "https://" + window.location.hostname + window.location.pathname;
@@ -227,8 +226,6 @@ function generateImage(){
     var imagename = ("BechdelBash_" + filterterm1 + "_vs_" + filterterm2 + ".png").replace(" ","-");
     $('#shareImg').attr("download", imagename);
     $('#shareLink').attr("href", linkurl);
-    console.log("imagename: "+ imagename);
-    console.log($('#shareImg').attr("download"));
     // window.history.pushState("object or string", "Title", "/new-url");
     // history.pushState(null, null, e.attr('href'));
     if(!history.pushState){
