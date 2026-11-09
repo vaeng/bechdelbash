@@ -1,12 +1,10 @@
 import os
 import re
+import sqlite3
 from flask import Flask, jsonify, render_template, request, Response
-import psycopg2
-from psycopg2 import sql
 import json
 from helpers import column2array, arrayfilter
 from flask_compress import Compress
-from flask_sslify import SSLify
 
 
 # compression
@@ -15,21 +13,42 @@ COMPRESS_LEVEL = 6
 COMPRESS_MIN_SIZE = 500
 
 
-# Set up database
-DATABASE_URL = os.environ['DATABASE_URL']
-connection = psycopg2.connect(DATABASE_URL, sslmode='require')
-cursor = connection.cursor()
+# Valid categories that map to DB columns
+VALID_CATEGORIES = {
+    "genres": "genres",
+    "country": "country",
+    "castmember": "castmembers",
+    "writers": "writers",
+    "directors": "directors",
+    "title": "title",
+}
 
-genrearray = column2array("genres", cursor)
-countryarray = column2array("country", cursor)
-castarray = column2array("castmember", cursor)
-writersarray = column2array("writers", cursor)
-directorsarray = column2array("directors", cursor)
+
+# Set up database
+DB_PATH = os.environ.get('DATABASE_URL', 'movies.db')
+# If a full DATABASE_URL is set (for PostgreSQL), use SQLite file instead
+if DB_PATH.startswith('postgres://') or DB_PATH.startswith('postgresql://'):
+    DB_PATH = 'movies.db'
+
+
+def get_cursor():
+    """Open a fresh connection for the current thread (safe under multiple workers/threads)."""
+    conn = sqlite3.connect(DB_PATH)
+    return conn.cursor()
+
+
+# Precompute the filterable values once, using a short-lived connection.
+_init_cursor = sqlite3.connect(DB_PATH).cursor()
+genrearray = column2array("genres", _init_cursor)
+countryarray = column2array("country", _init_cursor)
+castarray = column2array("castmembers", _init_cursor)
+writersarray = column2array("writers", _init_cursor)
+directorsarray = column2array("directors", _init_cursor)
+_init_cursor.connection.close()
 
 # Configure application
 app = Flask(__name__)
 Compress(app)
-sslify = SSLify(app)
 
 
 # Ensure responses aren't cached
@@ -42,13 +61,22 @@ sslify = SSLify(app)
 
 @app.route('/<category>/<filters>/')
 def bechdelresults(category, filters):
+
+    # Map user-facing category to DB column
+    db_column = VALID_CATEGORIES.get(category)
+    if not db_column:
+        return ("No known movies for: " + filters + " in " + category)
+
     filterstring = "%" + filters + "%"
+    cursor = get_cursor()
     try:
-        cursor.execute(sql.SQL("SELECT SUM(rating), COUNT(rating) FROM list WHERE {} ILIKE %s").format(sql.Identifier(category)), (filterstring,))
+        cursor.execute(f"SELECT SUM(rating), COUNT(rating) FROM list WHERE \"{db_column}\" LIKE ?", (filterstring,))
     except:
         return ("No known movies for: " + filters + " in " + category)
     result = cursor.fetchone()
-    return ("The average bechdel score for movies with " + filters + " in "  + category + " is " + str(result[0]/result[1]) + " with " + str(result[0]) + " movies.")
+    if result[1] == 0:
+        return ("No known movies for: " + filters + " in " + category)
+    return ("The average bechdel score for movies with " + filters + " in "  + category + " is " + str(result[0]/result[1]) + " with " + str(result[1]) + " movies.")
 
 @app.route("/api/<method>", methods=["POST", "GET"])
 def apirequest(method):
@@ -81,18 +109,24 @@ def apirequest(method):
     data["category"] = category
     data["filterTerm"] = filterterm
 
+    # Map user-facing category to DB column
+    db_column = VALID_CATEGORIES.get(category)
+    if not db_column:
+        return Response(json.dumps({"error" : f"Category '{category}' is not valid"}),  mimetype='application/json', status=400)
+
     filterstring = "%" + filterterm + "%"
 
-    sqlsearchstring = """SELECT COUNT(*) total,
+    cursor = get_cursor()
+    sqlsearchstring = f"""SELECT COUNT(*) total,
                                 SUM(case when rating = 0 then 1 else 0 end) rating0,
                                 SUM(case when rating = 1 then 1 else 0 end) rating1,
                                 SUM(case when rating = 2 then 1 else 0 end) rating2,
                                 SUM(case when rating = 3 then 1 else 0 end) rating3
                            FROM list
-                           WHERE {}
-                           ILIKE %s"""
+                           WHERE \"{db_column}\"
+                           LIKE ?"""
     try:
-        cursor.execute(sql.SQL(sqlsearchstring).format(sql.Identifier(category)), (filterstring,))
+        cursor.execute(sqlsearchstring, (filterstring,))
     except:
         return Response(json.dumps({"error" : "Problem with the database request. Maybe category " + category + " is not valid?"}),  mimetype='application/json', status=400)
 
@@ -113,15 +147,24 @@ def apirequest(method):
         sorter = "decade"
     if method == "getYearlyScores":
         sorter = "year"
-    sqlsearchstring = "SELECT "+ sorter + "," + sqlsearchstring[6:] # remove the select argument, so year / decade can be inserted
-    sqlsearchstring += " GROUP BY " + sorter + " ORDER BY " + sorter # add the grouping
+    # Build the dynamic SQL — category is validated server-side as one of the known columns
+    sqlsearchstring = f"""SELECT {sorter},
+                               COUNT(*) total,
+                               SUM(case when rating = 0 then 1 else 0 end) rating0,
+                               SUM(case when rating = 1 then 1 else 0 end) rating1,
+                               SUM(case when rating = 2 then 1 else 0 end) rating2,
+                               SUM(case when rating = 3 then 1 else 0 end) rating3
+                          FROM list
+                          WHERE \"{db_column}\"
+                          LIKE ?
+                          GROUP BY {sorter}
+                          ORDER BY {sorter}"""
 
     # following for  "getDecadeScores" and "getYearlyScores" methods
     try:
-        cursor.execute(sql.SQL(sqlsearchstring).format(sql.Identifier(category)), (filterstring,))
+        cursor.execute(sqlsearchstring, (filterstring,))
     except:
         return Response(json.dumps({"error" : "Problem in the 'getDecadeScores' or 'getYearlyScores' methods"}),  mimetype='application/json', status=400)
-
 
 
     data[sorter + 's'] ={}
@@ -173,6 +216,11 @@ def search(category,query,limit):
         targetarray = writersarray
     elif category == "directors":
         targetarray = directorsarray
+    elif category == "title":
+        targetarray = []
+
+    if not targetarray:
+        return Response(json.dumps({"error" : f"Category '{category}' not found"}),  mimetype='application/json', status=400)
 
     filteredarray = arrayfilter(targetarray, query)
     returndict = {'totalresults' : len(filteredarray), 'category' : category, 'query' : query, 'limit' : limit, 'results' : filteredarray[:int(limit)]}
@@ -193,4 +241,4 @@ def manifest():
 
 
 if __name__ == '__main__':
-   app.run(debug = True)
+   app.run(debug=True, host='0.0.0.0', port=8080)
